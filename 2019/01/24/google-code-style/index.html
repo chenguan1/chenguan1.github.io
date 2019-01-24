@@ -3,16 +3,16 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>google code style | 陈不二</title>
+  <title>Google开源项目风格指南 | 陈不二</title>
   <meta name="author" content="Gray">
   
-  <meta name="description" content="目录[TOC]
-类隐式类型转换总述不要定义隐室类型转换，对于转换运算符和单参数构造函数，需要使用1234567891011121314151617181920212223242526272829303132333435363738394041424344454647在类型定义中, 类型转换运算符和单">
+  <meta name="description" content="类隐式类型转换总述不要定义隐室类型转换，对于转换运算符和单参数构造函数，需要使用 explicit 关键字。
+在类型定义中, 类型转换运算符和单参数构造函数都应当用 explicit 进行标记. 一个例外是, 拷贝和移动构造函数不应当被标记为 explicit, 因为它们并不执行类型转换. 对于设计目的就是用于对其他类型进行透明包装的类来说, 隐式类型转换有时是必要且合适的. 这时应当联系项目组长并说明特殊情况.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="google code style">
+  <meta property="og:title" content="Google开源项目风格指南">
   <meta property="og:site_name" content="陈不二">
 
   
@@ -58,36 +58,80 @@
       
       
   
-    <h1 class="title">google code style</h1>
+    <h1 class="title">Google开源项目风格指南</h1>
   
 
     </header>
     <div class="entry">
       
-        <h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><p>[TOC]</p>
-<h1 id="类"><a href="#类" class="headerlink" title="类"></a>类</h1><h2 id="隐式类型转换"><a href="#隐式类型转换" class="headerlink" title="隐式类型转换"></a>隐式类型转换</h2><h3 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h3><p>不要定义隐室类型转换，对于转换运算符和单参数构造函数，需要使用<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在类型定义中, 类型转换运算符和单参数构造函数都应当用 ```explicit``` 进行标记. 一个例外是, 拷贝和移动构造函数不应当被标记为 ```explicit```, 因为它们并不执行类型转换. 对于设计目的就是用于对其他类型进行透明包装的类来说, 隐式类型转换有时是必要且合适的. 这时应当联系项目组长并说明特殊情况.</span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">## 结构体 VS. 类</span><br><span class="line">### 总述</span><br><span class="line">仅当只有数据成员的时候才用```struct```，其他情况一概使用```class```，```Initialize()```,``` Reset()```,```Validate()``` 等类似的用于设定数据成员的函数外, 不能提供其它功能的函数。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 总结</span><br><span class="line">0. 不在构造函数中做太多逻辑相关的初始化;</span><br><span class="line">1. 编译器提供的默认构造函数不会对变量进行初始化, 如果定义了其他构造函数, 编译器不再提供, 需要编码者自行提供默认构造函数;</span><br><span class="line">2. 为避免隐式转换, 需将单参数构造函数声明为 explicit;</span><br><span class="line">3. 为避免拷贝构造函数, 赋值操作的滥用和编译器自动生成, 可将其声明为 private 且无需实现;</span><br><span class="line">4. 仅在作为数据集合时使用 struct;</span><br><span class="line">5. 组合 &gt; 实现继承 &gt; 接口继承 &gt; 私有继承, 子类重载的虚函数也要声明 virtual 关键字, 虽然编译器允许不这样做;</span><br><span class="line">6. 避免使用多重继承, 使用时, 除一个基类含有实现外, 其他基类均为纯接口;</span><br><span class="line">7. 接口类类名以 Interface 为后缀, 除提供带实现的虚析构函数, 静态成员函数外, 其他均为纯虚函数, 不定义非静态数据成员, 不提供构造函数, 提供的话, 声明为 protected;</span><br><span class="line">8. 为降低复杂性, 尽量不重载操作符, 模板, 标准类中使用时提供文档说明;</span><br><span class="line">9. 存取函数一般内联在头文件中;</span><br><span class="line">10. 声明次序: public -&gt; protected -&gt; private;</span><br><span class="line">11. 函数体尽量短小, 紧凑, 功能单一;</span><br><span class="line"></span><br><span class="line"># 函数</span><br><span class="line">## 参数顺序</span><br><span class="line">### 总述</span><br><span class="line">函数的参数顺序为: 输入参数在先, 后跟输出参数.</span><br><span class="line"></span><br><span class="line">### 说明</span><br><span class="line">输入参数通常是值参或 const 引用, </span><br><span class="line">输出参数或输入/输出参数则一般为非 const 指针. 在排列参数顺序时, 将所有的输入参数置于输出参数之前.</span><br><span class="line">函数的参数顺序为: 输入参数在先, 后跟输出参数.</span><br><span class="line"></span><br><span class="line">## 编写简短函数</span><br><span class="line">### 总述</span><br><span class="line">尽量编写简短、凝练的函数</span><br><span class="line"></span><br><span class="line">### 说明</span><br><span class="line">如果函数超过 40 行, 可以思索一下能不能在不影响程序结构的前提下对其进行分割.</span><br><span class="line"></span><br><span class="line">即使一个长函数现在工作的非常好, 一旦有人对其修改, 有可能出现新的问题, 甚至导致难以发现的 bug. 使函数尽量简短, 以便于他人阅读和修改代码.</span><br><span class="line"></span><br><span class="line">在处理代码时, 你可能会发现复杂的长函数. 不要害怕修改现有代码: 如果证实这些代码使用 / 调试起来很困难, 或者你只需要使用其中的一小段代码, 考虑将其分割为更加简短并易于管理的若干函数.</span><br><span class="line"></span><br><span class="line">## 引用参数</span><br><span class="line">### 总述</span><br><span class="line">所有按引用传递的参数必须加上```const</span><br></pre></td></tr></table></figure></p>
-<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void Foo(const string &amp;in, string *out);</span><br></pre></td></tr></table></figure>
-<p>事实上这在 Google Code 是一个硬性约定: 输入参数是值参或 <figure class="highlight plain"><figcaption><span>引用, 输出参数为指针. 输入参数可以是 ```const``` 指针, 但决不能是非``` const``` 的引用参数, 除非特殊要求, 比如 ```swap()```.</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">有时候, 在输入形参中用 ```const T*``` 指针比 ```const T&amp;``` 更明智. 比如:</span><br><span class="line">* 可能会传递空指针.</span><br><span class="line">* 函数要把指针或对地址的引用赋值给输入形参.</span><br><span class="line"></span><br><span class="line">总而言之, 大多时候输入形参往往是 ```const T&amp;```. 若用 ```const T*``` 则说明输入另有处理. 所以若要使用 ```const T*```, 则应给出相应的理由, 否则会使得读者感到迷惑.</span><br><span class="line"></span><br><span class="line">## 类型转换</span><br><span class="line">使用 C++ 的类型转换, 如 ```static_cast&lt;&gt;()```. 不要使用 ```int y = (int)x``` 或 ```int y = int(x)``` 等转换方式;</span><br><span class="line">### 结论</span><br><span class="line">不要使用 C 风格类型转换. 而应该使用 C++ 风格.</span><br><span class="line">* 用 ```static_cast``` 替代 C 风格的值转换, 或某个类指针需要明确的向上转换为父类指针时.</span><br><span class="line">* 用 ```const_cast``` 去掉 ```const``` 限定符.</span><br><span class="line">* 用 ```reinterpret_cast``` 指针类型和整型或其它指针之间进行不安全的相互转换. 仅在你对所做一切了然于心时使用.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 使用流</span><br><span class="line">### 定义</span><br><span class="line">使用流来代替```printf()```和```scanf()```.</span><br><span class="line">### 缺点</span><br><span class="line">流使得 ```pread()``` 等功能函数很难执行. 如果不使用 printf 风格的格式化字符串, 某些格式化操作 (尤其是常用的格式字符串 ```%.*s```) 用流处理性能是很低的. 流不支持字符串操作符重新排序 (```%1s```), 而这一点对于软件国际化很有用.</span><br><span class="line">### 结论</span><br><span class="line">不要使用流, 除非是日志接口需要. 使用 ```printf``` 之类的代替.</span><br><span class="line">使用流还有很多利弊, 但代码一致性胜过一切. 不要在代码中使用流.</span><br><span class="line"></span><br><span class="line">## 使用前置自增和自减</span><br><span class="line">### 总述</span><br><span class="line">对于迭代器和其他模板对象使用前缀形式 (++i) 的自增, 自减运算符.</span><br><span class="line">### 说明</span><br><span class="line">不考虑返回值的话, 前置自增 (++i) 通常要比后置自增 (i++) 效率更高. 因为后置自增 (或自减) 需要对表达式的值 i 进行一次拷贝. 如果 i 是迭代器或其他非数值类型, 拷贝的代价是比较大的. 既然两种自增方式实现的功能一样, 为什么不总是使用前置自增呢?</span><br><span class="line">### 结论</span><br><span class="line">对简单数值 (非对象), 两种都无所谓. 对迭代器和模板类型, 使用前置自增 (自减).</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 整型</span><br><span class="line">### 总述</span><br><span class="line">C++ 内建整型中, 仅使用 int. 如果程序中需要不同大小的变量, 可以使用 &lt;stdint.h&gt; 中长度精确的整型, 如 int16_t.如果您的变量可能不小于 2^31 (2GiB), 就用 64 位变量比如 int64_t. 此外要留意，哪怕您的值并不会超出 int 所能够表示的范围，在计算过程中也可能会溢出。所以拿不准时，干脆用更大的类型。</span><br><span class="line"></span><br><span class="line">C++ 没有指定整型的大小. 通常人们假定 ```short``` 是 16 位, ```int``` 是 32 位, ```long``` 是 32 位, ```long long``` 是 64 位.</span><br><span class="line"></span><br><span class="line">### 关于无符号整数</span><br><span class="line">有些人, 包括一些教科书作者, 推荐使用无符号类型表示非负数. 这种做法试图达到自我文档化. 但是, 在 C 语言中, 这一优点被由其导致的 bug 所淹没. 看看下面的例子:</span><br></pre></td></tr></table></figure></p>
-<p>for (unsigned int i = foo.Length()-1; i &gt;= 0; –i) …<br><code>`</code><br>上述循环永远不会退出! 有时 gcc 会发现该 bug 并报警, 但大部分情况下都不会. 类似的 bug 还会出现在比较有符合变量和无符号变量时. 主要是 C 的类型提升机制会致使无符号类型的行为出乎你的意料.</p>
+        <h1 id="类"><a href="#类" class="headerlink" title="类"></a>类</h1><h2 id="隐式类型转换"><a href="#隐式类型转换" class="headerlink" title="隐式类型转换"></a>隐式类型转换</h2><h3 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h3><p>不要定义隐室类型转换，对于转换运算符和单参数构造函数，需要使用 explicit 关键字。</p>
+<p>在类型定义中, 类型转换运算符和单参数构造函数都应当用 explicit 进行标记. 一个例外是, 拷贝和移动构造函数不应当被标记为 explicit, 因为它们并不执行类型转换. 对于设计目的就是用于对其他类型进行透明包装的类来说, 隐式类型转换有时是必要且合适的. 这时应当联系项目组长并说明特殊情况.<br><a id="more"></a></p>
+<h2 id="结构体-VS-类"><a href="#结构体-VS-类" class="headerlink" title="结构体 VS. 类"></a>结构体 VS. 类</h2><h3 id="总述-1"><a href="#总述-1" class="headerlink" title="总述"></a>总述</h3><p>仅当只有数据成员的时候才用struct，其他情况一概使用class，Initialize, Reset(),Validate() 等类似的用于设定数据成员的函数外, 不能提供其它功能的函数。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol start="0">
+<li>不在构造函数中做太多逻辑相关的初始化;</li>
+<li>编译器提供的默认构造函数不会对变量进行初始化, 如果定义了其他构造函数, 编译器不再提供, 需要编码者自行提供默认构造函数;</li>
+<li>为避免隐式转换, 需将单参数构造函数声明为 explicit;</li>
+<li>为避免拷贝构造函数, 赋值操作的滥用和编译器自动生成, 可将其声明为 private 且无需实现;</li>
+<li>仅在作为数据集合时使用 struct;</li>
+<li>组合 &gt; 实现继承 &gt; 接口继承 &gt; 私有继承, 子类重载的虚函数也要声明 virtual 关键字, 虽然编译器允许不这样做;</li>
+<li>避免使用多重继承, 使用时, 除一个基类含有实现外, 其他基类均为纯接口;</li>
+<li>接口类类名以 Interface 为后缀, 除提供带实现的虚析构函数, 静态成员函数外, 其他均为纯虚函数, 不定义非静态数据成员, 不提供构造函数, 提供的话, 声明为 protected;</li>
+<li>为降低复杂性, 尽量不重载操作符, 模板, 标准类中使用时提供文档说明;</li>
+<li>存取函数一般内联在头文件中;</li>
+<li>声明次序: public -&gt; protected -&gt; private;</li>
+<li>函数体尽量短小, 紧凑, 功能单一;</li>
+</ol>
+<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><h2 id="参数顺序"><a href="#参数顺序" class="headerlink" title="参数顺序"></a>参数顺序</h2><h3 id="总述-2"><a href="#总述-2" class="headerlink" title="总述"></a>总述</h3><p>函数的参数顺序为: 输入参数在先, 后跟输出参数.</p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>输入参数通常是值参或 const 引用,<br>输出参数或输入/输出参数则一般为非 const 指针. 在排列参数顺序时, 将所有的输入参数置于输出参数之前.<br>函数的参数顺序为: 输入参数在先, 后跟输出参数.</p>
+<h2 id="编写简短函数"><a href="#编写简短函数" class="headerlink" title="编写简短函数"></a>编写简短函数</h2><h3 id="总述-3"><a href="#总述-3" class="headerlink" title="总述"></a>总述</h3><p>尽量编写简短、凝练的函数</p>
+<h3 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h3><p>如果函数超过 40 行, 可以思索一下能不能在不影响程序结构的前提下对其进行分割.</p>
+<p>即使一个长函数现在工作的非常好, 一旦有人对其修改, 有可能出现新的问题, 甚至导致难以发现的 bug. 使函数尽量简短, 以便于他人阅读和修改代码.</p>
+<p>在处理代码时, 你可能会发现复杂的长函数. 不要害怕修改现有代码: 如果证实这些代码使用 / 调试起来很困难, 或者你只需要使用其中的一小段代码, 考虑将其分割为更加简短并易于管理的若干函数.</p>
+<h2 id="引用参数"><a href="#引用参数" class="headerlink" title="引用参数"></a>引用参数</h2><h3 id="总述-4"><a href="#总述-4" class="headerlink" title="总述"></a>总述</h3><p>所有按引用传递的参数必须加上 const</p>
+<h3 id="说明-2"><a href="#说明-2" class="headerlink" title="说明"></a>说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void Foo(const string &amp;in, string *out);</span><br></pre></td></tr></table></figure>
+<p>事实上这在 Google Code 是一个硬性约定: 输入参数是值参或 const 引用, 输出参数为指针. 输入参数可以是 const 指针, 但决不能是非 const 的引用参数, 除非特殊要求, 比如 swap().</p>
+<p>有时候, 在输入形参中用 const T* 指针比 const T&amp; 更明智. 比如:</p>
+<ul>
+<li>可能会传递空指针.</li>
+<li>函数要把指针或对地址的引用赋值给输入形参.</li>
+</ul>
+<p>总而言之, 大多时候输入形参往往是 const T&amp;. 若用 const T<em> 则说明输入另有处理. 所以若要使用 const T</em>, 则应给出相应的理由, 否则会使得读者感到迷惑.</p>
+<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><p>使用 C++ 的类型转换, 如 static_cast&lt;&gt;(). 不要使用 int y = (int)x 或 int y = int(x) 等转换方式;</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>不要使用 C 风格类型转换. 而应该使用 C++ 风格.</p>
+<ul>
+<li>用 static_cast 替代 C 风格的值转换, 或某个类指针需要明确的向上转换为父类指针时.</li>
+<li>用 const_cast 去掉 const 限定符.</li>
+<li>用 reinterpret_cast 指针类型和整型或其它指针之间进行不安全的相互转换. 仅在你对所做一切了然于心时使用.</li>
+</ul>
+<h2 id="使用流"><a href="#使用流" class="headerlink" title="使用流"></a>使用流</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>使用流来代替 printf() 和 scanf().</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>流使得 pread() 等功能函数很难执行. 如果不使用 printf 风格的格式化字符串, 某些格式化操作 (尤其是常用的格式字符串 %.*s) 用流处理性能是很低的. 流不支持字符串操作符重新排序 (%1s), 而这一点对于软件国际化很有用.</p>
+<h3 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h3><p>不要使用流, 除非是日志接口需要. 使用 printf 之类的代替.<br>使用流还有很多利弊, 但代码一致性胜过一切. 不要在代码中使用流.</p>
+<h2 id="使用前置自增和自减"><a href="#使用前置自增和自减" class="headerlink" title="使用前置自增和自减"></a>使用前置自增和自减</h2><h3 id="总述-5"><a href="#总述-5" class="headerlink" title="总述"></a>总述</h3><p>对于迭代器和其他模板对象使用前缀形式 (++i) 的自增, 自减运算符.</p>
+<h3 id="说明-3"><a href="#说明-3" class="headerlink" title="说明"></a>说明</h3><p>不考虑返回值的话, 前置自增 (++i) 通常要比后置自增 (i++) 效率更高. 因为后置自增 (或自减) 需要对表达式的值 i 进行一次拷贝. 如果 i 是迭代器或其他非数值类型, 拷贝的代价是比较大的. 既然两种自增方式实现的功能一样, 为什么不总是使用前置自增呢?</p>
+<h3 id="结论-2"><a href="#结论-2" class="headerlink" title="结论"></a>结论</h3><p>对简单数值 (非对象), 两种都无所谓. 对迭代器和模板类型, 使用前置自增 (自减).</p>
+<h2 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h2><h3 id="总述-6"><a href="#总述-6" class="headerlink" title="总述"></a>总述</h3><p>C++ 内建整型中, 仅使用 int. 如果程序中需要不同大小的变量, 可以使用 &lt;stdint.h&gt; 中长度精确的整型, 如 int16_t.如果您的变量可能不小于 2^31 (2GiB), 就用 64 位变量比如 int64_t. 此外要留意，哪怕您的值并不会超出 int 所能够表示的范围，在计算过程中也可能会溢出。所以拿不准时，干脆用更大的类型。</p>
+<p>C++ 没有指定整型的大小. 通常人们假定 short 是 16 位, int 是 32 位, long 是 32 位, long long 是 64 位.</p>
+<h3 id="关于无符号整数"><a href="#关于无符号整数" class="headerlink" title="关于无符号整数"></a>关于无符号整数</h3><p>有些人, 包括一些教科书作者, 推荐使用无符号类型表示非负数. 这种做法试图达到自我文档化. 但是, 在 C 语言中, 这一优点被由其导致的 bug 所淹没. 看看下面的例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for (unsigned int i = foo.Length()-1; i &gt;= 0; --i) ...</span><br></pre></td></tr></table></figure></p>
+<p>上述循环永远不会退出! 有时 gcc 会发现该 bug 并报警, 但大部分情况下都不会. 类似的 bug 还会出现在比较有符合变量和无符号变量时. 主要是 C 的类型提升机制会致使无符号类型的行为出乎你的意料.</p>
 <p>因此, 使用断言来指出变量为非负数, 而不是使用无符号型!</p>
-<h2 id="预处理宏"><a href="#预处理宏" class="headerlink" title="预处理宏"></a>预处理宏</h2><h3 id="总述-1"><a href="#总述-1" class="headerlink" title="总述"></a>总述</h3><p>使用宏时要非常谨慎, 尽量以内联函数, 枚举和常量代替之.<br>宏意味着你和编译器看到的代码是不同的. 这可能会导致异常行为, 尤其因为宏具有全局作用域.</p>
-<p>值得庆幸的是, C++ 中, 宏不像在 C 中那么必不可少. 以往用宏展开性能关键的代码, 现在可以用内联函数替代. 用宏表示常量可被 <code>const</code> 变量代替. 用宏 “缩写” 长变量名可被引用代替. 用宏进行条件编译… 这个, 千万别这么做, 会令测试更加痛苦 (<code>#define</code> 防止头文件重包含当然是个特例).</p>
+<h2 id="预处理宏"><a href="#预处理宏" class="headerlink" title="预处理宏"></a>预处理宏</h2><h3 id="总述-7"><a href="#总述-7" class="headerlink" title="总述"></a>总述</h3><p>使用宏时要非常谨慎, 尽量以内联函数, 枚举和常量代替之.<br>宏意味着你和编译器看到的代码是不同的. 这可能会导致异常行为, 尤其因为宏具有全局作用域.</p>
+<p>值得庆幸的是, C++ 中, 宏不像在 C 中那么必不可少. 以往用宏展开性能关键的代码, 现在可以用内联函数替代. 用宏表示常量可被 const 变量代替. 用宏 “缩写” 长变量名可被引用代替. 用宏进行条件编译… 这个, 千万别这么做, 会令测试更加痛苦 (#define 防止头文件重包含当然是个特例).</p>
 <p>宏可以做一些其他技术无法实现的事情, 在一些代码库 (尤其是底层库中) 可以看到宏的某些特性 (如用 # 字符串化, 用 ## 连接等等). 但在使用前, 仔细考虑一下能不能不使用宏达到同样的目的.</p>
 <p>下面给出的用法模式可以避免使用宏带来的问题; 如果你要宏, 尽可能遵守:</p>
 <ul>
-<li>不要在 <code>.h</code> 文件中定义宏.</li>
-<li>在马上要使用时才进行 <code>#define</code>, 使用后要立即 <code>#undef</code>.</li>
-<li>不要只是对已经存在的宏使用<code>#undef</code>，选择一个不会冲突的名称；</li>
+<li>不要在 .h 文件中定义宏.</li>
+<li>在马上要使用时才进行 #define, 使用后要立即 #undef.</li>
+<li>不要只是对已经存在的宏使用 #undef ，选择一个不会冲突的名称；</li>
 <li>不要试图使用展开后会导致 C++ 构造不稳定的宏, 不然也至少要附上文档说明其行为.</li>
-<li>不要用 <code>##</code> 处理函数，类和变量的名字。</li>
+<li>不要用 ## 处理函数，类和变量的名字。</li>
 </ul>
 <h2 id="0值的规范化"><a href="#0值的规范化" class="headerlink" title="0值的规范化"></a>0值的规范化</h2><p>###总述<br>整数用 0, 实数用 0.0, 指针用 nullptr 或 NULL, 字符 (串) 用 ‘\0’.</p>
 <p>整数用 0, 实数用 0.0, 这一点是毫无争议的.</p>
 <p>对于指针 (地址值), 到底是用 0, NULL 还是 nullptr. C++11 项目用 nullptr; C++03 项目则用 NULL, 毕竟它看起来像指针。实际上，一些 C++ 编译器对 NULL 的定义比较特殊，可以输出有用的警告，特别是 sizeof(NULL) 就和 sizeof(0) 不一样。</p>
 <p>字符 (串) 用 ‘\0’, 不仅类型正确而且可读性好.</p>
-<h2 id="sizeof"><a href="#sizeof" class="headerlink" title="sizeof"></a>sizeof</h2><h3 id="总述-2"><a href="#总述-2" class="headerlink" title="总述"></a>总述</h3><p>尽可能用 sizeof(varname) 代替 sizeof(type).</p>
+<h2 id="sizeof"><a href="#sizeof" class="headerlink" title="sizeof"></a>sizeof</h2><h3 id="总述-8"><a href="#总述-8" class="headerlink" title="总述"></a>总述</h3><p>尽可能用 sizeof(varname) 代替 sizeof(type).</p>
 <p>使用 sizeof(varname) 是因为当代码中变量类型改变时会自动更新. 您或许会用 sizeof(type) 处理不涉及任何变量的代码，比如处理来自外部或内部的数据格式，这时用变量就不合适了。</p>
-<h2 id="auto"><a href="#auto" class="headerlink" title="auto"></a>auto</h2><h3 id="总述-3"><a href="#总述-3" class="headerlink" title="总述"></a>总述</h3><p>用 auto 绕过烦琐的类型名，只要可读性好就继续用，别用在局部变量之外的地方。</p>
+<h2 id="auto"><a href="#auto" class="headerlink" title="auto"></a>auto</h2><h3 id="总述-9"><a href="#总述-9" class="headerlink" title="总述"></a>总述</h3><p>用 auto 绕过烦琐的类型名，只要可读性好就继续用，别用在局部变量之外的地方。</p>
 
       
     </div>
